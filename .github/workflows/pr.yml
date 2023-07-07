@@ -15,7 +15,8 @@ jobs:
         id: changes
         run: |
           echo $GITHUB_REF
-          PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          PR_NUMBER=$(echo $GITHUB_REF | sed -e "s|refs/heads/||")
+          echo $PR_NUMBER
           echo "all_files<<EOF" >> $GITHUB_OUTPUT
           gh pr diff $PR_NUMBER --name-only | xargs >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
