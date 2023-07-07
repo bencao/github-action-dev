@@ -14,6 +14,7 @@ jobs:
       - name: Get changed files
         id: changes
         run: |
+          echo $GITHUB_REF
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           echo "all_files<<EOF" >> $GITHUB_OUTPUT
           gh pr diff $PR_NUMBER --name-only | xargs >> $GITHUB_OUTPUT
