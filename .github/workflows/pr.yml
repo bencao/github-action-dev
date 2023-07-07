@@ -1,0 +1,31 @@
+name: pr-checks
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Get PR number
+        id: pr
+        uses: kamatama41/get-pr-number-action@v0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get changed files
+        id: changes
+        run: |
+          echo "all_files<<EOF" >> $GITHUB_OUTPUT
+          gh pr diff ${{ steps.pr.outputs.number }} --name-only | xargs >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changes.outputs.all_files }}; do
+            echo "$file was changed"
+          done
